@@ -16,6 +16,27 @@ class SocialCard extends React.PureComponent {
 	}
 }
 
+class WeatherCard extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+
+		}
+	}
+	render() {
+		return (
+			<section>
+				<div className="wc-contain">
+					<span className="wc-day"></span>
+					<img className="wc-img" />
+					<p className="wc-temp"></p>
+				</div>
+			</section>
+		);
+	}
+
+}
+
 class App extends Component {
 	constructor(props) {
 		super(props);
