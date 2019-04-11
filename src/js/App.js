@@ -16,25 +16,48 @@ class SocialCard extends React.PureComponent {
 	}
 }
 
-class WeatherCard extends Component {
+class WeatherCard extends React.PureComponent {
+	
+	render() {
+		return (
+				<div className="wc-contain">
+					<p className="wc-day">{this.props.day}</p>
+					{/* <img className="wc-img" src="" /> */}
+					<div className="wc-example-img"></div>
+					<p className="wc-temp">
+						<span className="wc-temp-high">{this.props.temp.high}</span>
+						<span className="wc-temp-low">{this.props.temp.low}</span>
+					</p>
+				</div>
+		);
+	}
+}
+
+class WeatherRow extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-
+			day: ['Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat', 'Sun'],
+			temp: [
+				{high: 80, low: 67},
+				{high: 81, low: 65},
+				{high: 78, low: 63},
+			]
 		}
 	}
+	componentDidMount() {
+
+	}
+
 	render() {
 		return (
-			<section>
-				<div className="wc-contain">
-					<span className="wc-day"></span>
-					<img className="wc-img" />
-					<p className="wc-temp"></p>
-				</div>
+			<section className="w-row">
+				<WeatherCard day={this.state.day[0]} temp={this.state.temp[0]} />
+				<WeatherCard day={this.state.day[1]} temp={this.state.temp[1]} />
+				<WeatherCard day={this.state.day[2]} temp={this.state.temp[2]} />
 			</section>
 		);
 	}
-
 }
 
 class App extends Component {
@@ -52,6 +75,7 @@ class App extends Component {
 				<h1>Regular Social Card</h1>
 				<SocialCard image={this.state.img1} descH={this.state.descH1} descP={this.state.descP1} />
 				<h1>Weather Cards</h1>
+				<WeatherRow />
 			</div>
 		);
 	}
