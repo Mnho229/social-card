@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../sass/App.sass';
 import example from '../images/example.jpg'
+import { API_KEY } from './API_KEY.js';
 
 class SocialCard extends React.PureComponent {
 	render() {
@@ -25,8 +26,8 @@ class WeatherCard extends React.PureComponent {
 					{/* <img className="wc-img" src="" /> */}
 					<div className="wc-example-img"></div>
 					<p className="wc-temp">
-						<span className="wc-temp-high">{this.props.temp.high}</span>
-						<span className="wc-temp-low">{this.props.temp.low}</span>
+						<span className="wc-temp-high">{this.props.temp.high.toFixed(0)}</span>
+						<span className="wc-temp-low">{this.props.temp.low.toFixed(0)}</span>
 					</p>
 				</div>
 		);
@@ -37,25 +38,53 @@ class WeatherRow extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			day: ['Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat', 'Sun'],
-			temp: [
-				{high: 80, low: 67},
-				{high: 81, low: 65},
-				{high: 78, low: 63},
-			]
+			day: [],
+			temp: [],
+			data: {}
 		}
 	}
 	componentDidMount() {
+		this.loadWeatherByZip().then(data => 
+			this.setState({
+				data: data.list,
+				temp: data.list.map((value, index) => {
+					const dataContain = value.main;
+					return {
+						high: dataContain.temp_max,
+						low: dataContain.temp_min
+					}
+				}),
+				day: data.list.map((value, index) => {
+					return this._weatherDay(value.dt);
+				})
+			})
+		);
+	}
 
+	async loadWeatherByZip() {
+		let res = await fetch(`https://api.openweathermap.org/data/2.5/forecast?zip=40509,us&cnt=30&units=imperial&APPID=${API_KEY}`);
+		return res.json();
+	}
+
+	_weatherDay(timestamp) {
+		const days = ['Sun', 'Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat'];
+		const date = new Date(timestamp*1000);
+		console.log(timestamp, date);
+		return days[date.getDay()];
 	}
 
 	render() {
+		console.log(this.state.data);
+		console.log(this.state.temp);
+
+		let cards = this.state.temp.map((value, index) => {
+			return (
+				<WeatherCard key={index} day={this.state.day[index]} temp={this.state.temp[index]} />
+			);
+		});
+
 		return (
-			<section className="w-row">
-				<WeatherCard day={this.state.day[0]} temp={this.state.temp[0]} />
-				<WeatherCard day={this.state.day[1]} temp={this.state.temp[1]} />
-				<WeatherCard day={this.state.day[2]} temp={this.state.temp[2]} />
-			</section>
+			<section className="w-row">{cards}</section>
 		);
 	}
 }
