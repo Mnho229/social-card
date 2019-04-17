@@ -3,11 +3,21 @@ $font: sans-serif
 .App
 	display: flex
 	flex-direction: column
-	height: 100vh
+	height: auto
 
 	h1
 		margin: auto
 		font-family: Palatino
+		margin-top: 1em
+		margin-bottom: 1em
+	
+	.w-intro
+		font-size: 1.2em
+		font-family: $font
+		font-weight: 300
+		margin-top: 0
+		margin-bottom: 2.5em
+		text-align: center
 
 	// Regular Social Card
 
@@ -36,30 +46,46 @@ $font: sans-serif
 				font-size: 14px
 
 .w-row
+	
 
 .wc-contain
 	text-align: center
 	display: inline-block
 	font-family: $font
 	padding: 1em
-	border: 2px solid lightgray
+	margin-right: 10px
+	margin-bottom: 4em
+	border: 1px solid lightgray
 	width: 20%
+	box-shadow: 0 10px 6px -6px #777
+	transition: box-shadow 0.4s, border-bottom 0.4s
+	&:hover
+		box-shadow: 0 10px 6px -6px lightgreen
+		border-bottom: 1px solid lightgreen
 
-	.wc-example-img
+	.wc-day
+		margin-top: 0.5em
+
+	.wc-img
 		width: 75px
 		height: 75px
-		background-color: lightgreen
 		margin: auto
 
 	.wc-temp
+		opacity: 0
 		margin-bottom: 0
+		margin-top: 0
+		font-size: 1.2em
+		transition: opacity 0.2s
+		
+		&.hoverTemp
+			opacity: 100
 
 		.wc-temp-high
-			padding-right: 1em
+			padding-right: 2em
 
 		.wc-temp-low
 			color: gray
-    
 
 
 

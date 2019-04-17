@@ -19,12 +19,16 @@ class SocialCard extends React.PureComponent {
 
 class WeatherCard extends React.PureComponent {
 	
+	handleHoverCard(event) {
+		event.currentTarget.querySelector('.wc-temp').classList.toggle('hoverTemp');
+	}
+
 	render() {
 		return (
-				<div className="wc-contain">
+				<div className="wc-contain" onMouseEnter={this.handleHoverCard} onMouseLeave={this.handleHoverCard}>
 					<p className="wc-day">{this.props.day}</p>
-					{/* <img className="wc-img" src="" /> */}
-					<div className="wc-example-img"></div>
+					<p className="">{this.props.time}</p>
+					<img className="wc-img" src={this.props.img} />
 					<p className="wc-temp">
 						<span className="wc-temp-high">{this.props.temp.high.toFixed(0)}</span>
 						<span className="wc-temp-low">{this.props.temp.low.toFixed(0)}</span>
@@ -39,12 +43,14 @@ class WeatherRow extends Component {
 		super(props);
 		this.state = {
 			day: [],
+			time: [],
+			imgURL: [],
 			temp: [],
 			data: {}
 		}
 	}
 	componentDidMount() {
-		this.loadWeatherByZip().then(data => 
+		this._fetchWeatherByZip().then(data => 
 			this.setState({
 				data: data.list,
 				temp: data.list.map((value, index) => {
@@ -56,30 +62,48 @@ class WeatherRow extends Component {
 				}),
 				day: data.list.map((value, index) => {
 					return this._weatherDay(value.dt);
+				}),
+				time: data.list.map((value, index) => {
+					return this._weatherTime(value.dt);
+				}),
+				imgURL: data.list.map((value, index) => {
+					return this._weatherImg(value.weather['0'].icon);
 				})
 			})
 		);
 	}
 
-	async loadWeatherByZip() {
-		let res = await fetch(`https://api.openweathermap.org/data/2.5/forecast?zip=40509,us&cnt=30&units=imperial&APPID=${API_KEY}`);
+	async _fetchWeatherByZip() {
+		let res = await fetch(`https://api.openweathermap.org/data/2.5/forecast?zip=10001,us&cnt=28&units=imperial&APPID=${API_KEY}`);
 		return res.json();
 	}
 
 	_weatherDay(timestamp) {
-		const days = ['Sun', 'Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat'];
+		const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 		const date = new Date(timestamp*1000);
-		console.log(timestamp, date);
 		return days[date.getDay()];
+	}
+
+	_weatherTime(timestamp) {
+		const date = new Date(timestamp*1000);
+		return date.getHours() + ":00"; 
+	}
+
+	_weatherImg(imgID) {
+		return "http://openweathermap.org/img/w/" + imgID + ".png";
 	}
 
 	render() {
 		console.log(this.state.data);
-		console.log(this.state.temp);
-
 		let cards = this.state.temp.map((value, index) => {
 			return (
-				<WeatherCard key={index} day={this.state.day[index]} temp={this.state.temp[index]} />
+				<WeatherCard 
+					key={index} 
+					day={this.state.day[index]} 
+					time={this.state.time[index]} 
+					img={this.state.imgURL[index]} 
+					temp={this.state.temp[index]} 
+				/>
 			);
 		});
 
@@ -104,6 +128,7 @@ class App extends Component {
 				<h1>Regular Social Card</h1>
 				<SocialCard image={this.state.img1} descH={this.state.descH1} descP={this.state.descP1} />
 				<h1>Weather Cards</h1>
+				<p className="w-intro">Please hover over the cards to see the maximum and minimum temperatures.</p>
 				<WeatherRow />
 			</div>
 		);
