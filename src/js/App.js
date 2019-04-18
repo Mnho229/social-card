@@ -46,13 +46,11 @@ class WeatherRow extends Component {
 			time: [],
 			imgURL: [],
 			temp: [],
-			data: {}
 		}
 	}
 	componentDidMount() {
 		this._fetchWeatherByZip().then(data => 
 			this.setState({
-				data: data.list,
 				temp: data.list.map((value, index) => {
 					const dataContain = value.main;
 					return {
@@ -94,7 +92,6 @@ class WeatherRow extends Component {
 	}
 
 	render() {
-		console.log(this.state.data);
 		let cards = this.state.temp.map((value, index) => {
 			return (
 				<WeatherCard 
